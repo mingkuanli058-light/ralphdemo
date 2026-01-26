@@ -28,3 +28,11 @@ specs/REQUIREMENTS.md。
 在本模式下，每当一个任务完成、验证通过并提交后，
 必须自动继续执行 IMPLEMENTATION_PLAN.md 中下一个最高优先级未完成任务，不得在任务之间请求人工确认，
 除非明确触发规则中定义的停止条件。
+
+
+4.Bug 修复（增量模式，省 Token）
+你现在处于【修复模式（FIXING）】。
+请严格按照仓库中的 PROMPT_fix.md 和 AGENTS.md 执行。
+本模式跳过完整规划阶段，仅加载最小必要上下文。
+请根据 specs/bugs/ 目录下的 Bug 描述文件，定位问题、完成修复、验证并提交。
+修复完成后在 IMPLEMENTATION_PLAN.md 末尾追加修复记录。

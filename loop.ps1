@@ -12,7 +12,8 @@ param (
     # 执行模式：
     # plan  - 使用 PROMPT_plan.md（规划模式）
     # build - 使用 PROMPT_build.md（构建模式，默认）
-    [ValidateSet("plan", "build")]
+    # fix   - 使用 PROMPT_fix.md（修复模式，省Token）
+    [ValidateSet("plan", "build", "fix")]
     [string]$Mode = "build"
 )
 
@@ -32,6 +33,12 @@ while ($true) {
         Write-Host "进入【规划模式 PLAN】"
         Write-Host "职责：生成 / 重建 IMPLEMENTATION_PLAN.md"
         Get-Content PROMPT_plan.md | claude
+    }
+    elseif ($Mode -eq "fix") {
+        Write-Host "进入【修复模式 FIX】"
+        Write-Host "职责：定位 Bug → 最小修复 → 测试 → 提交"
+        Write-Host "特点：最小上下文加载，省 Token"
+        Get-Content PROMPT_fix.md | claude
     }
     else {
         Write-Host "进入【构建模式 BUILD】"

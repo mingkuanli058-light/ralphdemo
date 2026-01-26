@@ -11,12 +11,14 @@
 ```text
 .
 ├── specs/                     # 需求规格（最高权威）
+│   └── bugs/                  # Bug 描述文件（修复模式使用）
 ├── src/                       # 应用源码
 ├── src/lib/                   # 标准库 / 权威实现 / 可复用能力中心
 ├── tests/                     # pytest 测试（背压）
 ├── IMPLEMENTATION_PLAN.md     # 当前任务状态（自动维护，可丢弃）
 ├── PROMPT_plan.md             # 规划模式 prompt
 ├── PROMPT_build.md            # 构建模式 prompt
+├── PROMPT_fix.md              # 修复模式 prompt（省 Token）
 └── AGENTS.md                  # 本文件
 ```
 上述文件与目录是系统执行所必需的组成部分。
@@ -60,6 +62,22 @@ PROMPT_plan.md 与 PROMPT_build.md 是执行过程中使用的独立 prompt 模�
   - 必须遵守所有 Validation 与 Execution Rules
 
 当构建过程中发现计划不清或明显错误时，应退出构建模式并切换回 `PROMPT_plan.md`。
+
+### PROMPT_fix.md（修复模式）
+- 用于快速修复已知 Bug，跳过完整规划阶段以节省 Token
+- 用于以下情况：
+  - 需要修复明确的 Bug（有清晰的现象和复现步骤）
+  - Bug 描述已记录在 `specs/bugs/*.md` 中
+- 职责：
+  - 根据 Bug 描述定位问题根因
+  - 实现最小必要修复
+  - 验证并提交
+  - 在 `IMPLEMENTATION_PLAN.md` 末尾追加修复记录
+- 限制：
+  - 每次只修复一个 Bug
+  - 不加载完整 `specs/*.md`（除非 Bug 描述明确引用）
+  - 不进行与 Bug 无关的重构或优化
+  - 如修复需要架构级改动，应转入规划模式
 
 ## Investigation Rules（搜索纪律）
 
