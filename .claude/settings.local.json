@@ -3,7 +3,8 @@
     "allow": [
       "Bash(tree:*)",
       "Bash(git -C \"D:\\\\work\\\\ralphdemo\" log --oneline)",
-      "Bash(cmd /c \"dir /S /B D:\\\\ralph-proposal\")"
+      "Bash(cmd /c \"dir /S /B D:\\\\ralph-proposal\")",
+      "Bash(dir:*)"
     ]
   }
 }
