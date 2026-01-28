@@ -4,7 +4,27 @@
       "Bash(tree:*)",
       "Bash(git -C \"D:\\\\work\\\\ralphdemo\" log --oneline)",
       "Bash(cmd /c \"dir /S /B D:\\\\ralph-proposal\")",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(wc:*)",
+      "Bash(find:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git -C \"D:/sacw/cameraDetection\" diff core/person_detector_adaptive.py)",
+      "Bash(git -C \"D:/sacw/cameraDetection\" add main.py)",
+      "Bash(git -C \"D:/sacw/cameraDetection\" commit -m \"$\\(cat <<''EOF''\n[CHANGE] 恢复 main.py 中的许可证验证逻辑\n\n- 取消注释许可证检查代码（第 230-251 行）\n- 启动时验证 license.dat，无效则拒绝启动\n- 显示机器码便于用户申请许可证\n- 符合 specs/授权许可系统.md 需求 5\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C \"D:/sacw/cameraDetection\" add person_management_api.py)",
+      "Bash(git -C \"D:/sacw/cameraDetection\" commit -m \"$\\(cat <<''EOF''\n[NEW] 实现 /api/cameras 和 /api/statistics 接口\n\n- /api/cameras: 获取摄像头列表，调用 db.get_all_cameras\\(\\)\n- /api/statistics: 获取统计数据（摄像头数、记录数、今日记录、识别率等）\n- 符合 specs/Web界面与API.md 需求 1\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C \"D:/sacw/cameraDetection\" add tests/test_person_detection.py)",
+      "Bash(git -C \"D:/sacw/cameraDetection\" commit -m \"$\\(cat <<''EOF''\n[TEST] 为人员检测流水线（YOLO 推理）补充单元测试\n\n新增 tests/test_person_detection.py \\(22 个测试用例\\):\n- TestCPUDetection: CPU 检测与引擎选择（Intel→OpenVINO, AMD→ONNX）\n- TestAdaptivePersonDetector: 配置参数加载、强制引擎选择\n- TestPostprocessing: NMS 去重、置信度过滤\n- TestOutputFormat: 检测结果格式（bbox, conf, class_id）\n- TestPersonOnlyFiltering: 仅检测 person 类别\n- TestModelDiscovery: YOLOv8/v11 模型文件名模式\n- TestPreprocessing: 预处理输出形状与原始尺寸保存\n\n符合 specs/人员检测与YOLO推理.md 的 9 项核心需求\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C \"D:/sacw/cameraDetection\" add tests/test_database.py)",
+      "Bash(git -C \"D:/sacw/cameraDetection\" commit -m \"$\\(cat <<''EOF''\n[TEST] 为数据库操作补充单元测试\n\n新增 tests/test_database.py \\(19 个测试用例\\):\n- TestDatabasePoolCreation: 连接池初始化参数、单例模式、获取连接\n- TestSaveDetectionRecord: 保存记录返回 ID、SQL 参数、异常处理\n- TestRecordDeduplication: min_record_interval 配置、获取最近记录时间\n- TestTrajectoryMerge: trajectory_merge_interval 配置、更新结束时间、更新人数\n- TestGetAllRecords: 带限制查询、按时间排序\n- TestCameraOperations: 从 API 获取摄像头、按 ID 获取摄像头\n- TestConnectionResilience: 连接池恢复、状态检查\n- TestLongTrackDetection: 长时间滞留阈值、is_long_track 标志\n\n符合 specs/数据库与存储.md 的核心需求\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C \"D:/sacw/cameraDetection\" add tests/test_image_detection.py)",
+      "Bash(git -C \"D:/sacw/cameraDetection\" commit -m \"$\\(cat <<''EOF''\n[TEST] 为背景差分变化检测补充单元测试\n\n新增 tests/test_image_detection.py \\(23 个测试用例\\):\n- TestBackgroundSubtractorInit: MOG2/KNN 初始化、默认配置\n- TestChangeThreshold: 变化阈值判断（2% 默认值）\n- TestConsecutiveFrames: 连续帧确认逻辑（默认 2 帧）\n- TestMinChangeArea: 最小变化面积过滤（默认 500 像素）\n- TestMorphologyOperations: 开运算/闭运算去噪\n- TestDetectorReset: 检测器重置状态清理\n- TestChangeRatioCalculation: 变化比例计算\n- TestLearningRateBehavior: 学习率、历史帧数、方差阈值配置\n\n符合 specs/背景差分变化检测.md 的三重过滤规则\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C \"D:/sacw/cameraDetection\" add tests/test_web_api.py)",
+      "Bash(git -C \"D:/sacw/cameraDetection\" commit -m \"$\\(cat <<''EOF''\n[TEST] 为 Web API 接口补充集成测试\n\n新增 tests/test_web_api.py \\(23 个测试用例\\):\n- TestCamerasAPI: /api/cameras 端点状态码、JSON 格式、错误处理\n- TestStatisticsAPI: /api/statistics 端点统计字段和计算\n- TestPersonGroupsAPI: /api/person/groups 端点\n- TestPersonSetNameAPI: /api/person/set_name 参数验证\n- TestPersonSearchAPI: /api/person/search 搜索功能\n- TestPersonInfoAPI: /api/person/info/<id> 查询和 404\n- TestPersonStatusAPI: /api/person/status ReID 状态\n- TestRecordsPage: /records 页面\n- TestMjListAPI: /api/person/mj_list 民警列表\n- TestAPIResponseFormat: 统一响应格式\n\n符合 specs/Web界面与API.md 定义的 REST 端点\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C \"D:/sacw/cameraDetection\" add tests/test_license.py)",
+      "Bash(git -C \"D:/sacw/cameraDetection\" commit -m \"$\\(cat <<''EOF''\n[TEST] 为许可证验证系统补充单元测试\n\n新增 tests/test_license.py \\(19 个测试用例\\):\n- TestMachineCodeGeneration: 机器码 SHA256 格式、确定性、多硬件标识\n- TestRSAKeyGeneration: 密钥对生成、2048 位、保存加载\n- TestLicenseGeneration: 许可证字段、有效期计算\n- TestLicenseVerification: 有效许可证通过、缺失文件拒绝\n- TestExpiredLicenseRejection: 过期许可证拒绝\n- TestSignatureTamperRejection: 篡改机器码/签名拒绝\n- TestCheckLicense: 简化接口返回值\n- TestLicenseFileFormat: JSON 格式验证\n\n符合 specs/授权许可系统.md 的验证需求\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C \"D:/sacw/cameraDetection\" log --oneline -15)"
     ]
   }
 }

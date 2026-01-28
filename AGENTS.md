@@ -11,6 +11,9 @@
 ```text
 .
 ├── specs/                     # 需求规格（最高权威）
+│   ├── ui_reference/           # 页面效果 Ground Truth（HTML / CSS / Logo，仅作对照与验收）
+│   ├── schema_reference/       # 表结构 Ground Truth（建表 SQL，仅作结构参照，不自动执行）
+│   ├── function_map.md         # 原始功能 ↔ 文件工程地图（事实对照，不表示完成状态）
 │   └── bugs/                  # Bug 描述文件（修复模式使用）
 ├── src/                       # 应用源码
 ├── src/lib/                   # 标准库 / 权威实现 / 可复用能力中心
@@ -20,6 +23,7 @@
 ├── PROMPT_build.md            # 构建模式 prompt
 ├── PROMPT_fix.md              # 修复模式 prompt（省 Token）
 └── AGENTS.md                  # 本文件
+
 ```
 上述文件与目录是系统执行所必需的组成部分。
 如任一文件不存在，必须先创建后再继续执行。
@@ -241,11 +245,31 @@ pytest -q
 
 ---
 
+允许 BUILD 在确认“任务不可在单循环完成”时：
+- 不实现代码
+- 仅更新 IMPLEMENTATION_PLAN.md：将该任务移出 Executable Tasks，并注明原因
+- 然后正常退出本轮循环（视为一次合法完成）
+
+---
+
 ## General Principles（通用原则）
 - Specs 定义 做什么（WHAT）
 - Prompts 定义 能做什么 / 如何做（CAN / HOW）
 - Tests 定义 通过 / 失败（PASS / FAIL）
 - AGENTS.md 定义 如何执行（HOW TO EXECUTE）
+- BUILD 判断“任务是否完成”时，应参考 tests 与 Definition of Done（DoD）
+- Specs 可包含 acceptance hints / edge cases / 性能期望，以支持可验证完成性
+
+## Fact Authority Order（事实裁决顺序）
+
+- 当以下事实源存在冲突时，裁决顺序如下（从高到低）：
+1. specs/*.md（需求事实，唯一 WHAT）
+2. tests/（可执行裁判）
+3. src/（当前实现事实）
+4. function_map.md / schema_reference / ui_reference（事实型对照，不具备决策权）
+
+- 非代码事实源不得单独触发任务生成或实现行为。
+
 
 ## Loop Awareness
 
