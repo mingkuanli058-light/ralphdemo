@@ -36,3 +36,9 @@ specs/REQUIREMENTS.md。
 本模式跳过完整规划阶段，仅加载最小必要上下文。
 请根据 specs/bugs/ 目录下的 Bug 描述文件，定位问题、完成修复、验证并提交。
 修复完成后在 IMPLEMENTATION_PLAN.md 末尾追加修复记录。
+
+
+5.没有询问的即自动值守的 在cmd下执行
+cat PROMPT_plan.md | claude -p --dangerously-skip-permissions
+
+cat PROMPT_build.md | claude -p --dangerously-skip-permissions
