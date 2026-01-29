@@ -9,6 +9,9 @@
 
 BUILD 阶段只能从 “可执行任务（Executable Tasks）” 区域选择任务。
 如最高优先级任务不在该区，必须立即退出 BUILD 阶段，并切换回 PROMPT_plan.md 以重建或修正执行计划。
+若发现任务已在历史 commit 中完成或 Executable Tasks 区域为空，
+必须优先执行「状态校准规则」；
+校准后若仍无可执行任务，则按「BUILD 终止条件」正常结束。
 
 ---
 
@@ -177,6 +180,26 @@ Task Kind 只影响**允许 / 禁止的行为范围**，
 
 ---
 
+## 状态校准规则（Plan–Reality Reconciliation）
+
+在 BUILD 阶段，如发现以下情况：
+
+- 所选任务在历史 commit 中实际上已经完成；
+- 当前代码与测试状态满足该任务的所有验收条件；
+- 不需要新增或修改任何实现代码；
+
+则你 **必须** 执行以下操作，而不得请求人工确认：
+
+1. 更新 `IMPLEMENTATION_PLAN.md`，将对应任务标记为「已完成」或从 Executable Tasks 中移除；
+2. 在任务下方补充一句极简说明（例如：`已在 commit <hash> 中完成，测试全部通过`）；
+3. 无需新增“实现代码”改动；
+但对 IMPLEMENTATION_PLAN.md 的状态校准必须提交（允许仅文档/计划变更的 commit）；
+4. 完成上述状态校准后，自动继续下一轮 BUILD 循环。
+
+该行为视为「状态修正」，不属于规划行为，不需要切换回 PROMPT_plan.md。
+
+---
+
 ## 验证规则（Validation Rules）
 
 在完成实现后，必须进行验证：
@@ -184,3 +207,23 @@ Task Kind 只影响**允许 / 禁止的行为范围**，
 - 优先运行与当前任务直接相关的测试：
 ```bash
 pytest tests/
+```
+---
+
+## BUILD 终止条件（Terminal Conditions）
+
+在完成状态校准或任务执行后，如出现以下情况：
+
+- `IMPLEMENTATION_PLAN.md` 中 **不存在任何可执行任务（Executable Tasks）**；
+- 所有已存在任务均已标记为完成、无效或移出执行区；
+- 当前代码与测试状态无未解决失败；
+
+则你 **必须** 执行以下行为：
+
+1. 确认 `IMPLEMENTATION_PLAN.md` 已准确反映当前事实状态；
+2. **正常结束 BUILD 阶段执行**；
+3. 不得请求人工确认；
+4. 不得自动切换回 PROMPT_plan.md；
+5. 不得生成新的规划或建议性任务。
+
+该情况视为「BUILD 正常完成」，而非异常或中断。
