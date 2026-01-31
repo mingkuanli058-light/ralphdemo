@@ -29,6 +29,18 @@
 如任一文件不存在，必须先创建后再继续执行。
 ---
 
+## Windows Reserved Filenames (Hard Ban)
+
+严禁创建或写入以下文件名（大小写不敏感）：
+nul, con, aux, prn,
+com1–com9, lpt1–lpt9
+
+一旦检测到此类文件：
+- 立即停止执行
+- 不得继续 loop
+
+---
+
 ## Task 分类规范（Task Kind Taxonomy）
 
 为提升执行稳定性、避免任务语义漂移，`IMPLEMENTATION_PLAN.md` 中的每一项任务**必须显式标注任务类型（Task Kind）**。
