@@ -12,14 +12,21 @@
 
 在本模式下，你必须：
 
-- 阅读 specs/*.md …
-- 阅读 specs/ui_reference/
-- 阅读 specs/schema_reference/
-- 阅读 specs/function_map.md
-- 检查现有代码库（src/）
-- 生成或重建 IMPLEMENTATION_PLAN.md（允许完全覆盖既有内容）
+- 阅读 `specs/*.md` 中的全部需求与规格说明。
+- 阅读以下 **Specs 层事实型参照物**：
+  - `specs/ui_reference/`（页面效果 Ground Truth）
+  - `specs/schema_reference/`（表结构 Ground Truth，建表 SQL 仅作结构参照）
+  - `specs/function_map.md`（原始功能 ↔ 文件工程地图）
+- 检查现有代码库（`src/`），以了解当前已具备的能力。
+- 生成或重建 `IMPLEMENTATION_PLAN.md`，作为**唯一的执行状态来源**。
 
-在规划模式下，严禁任何代码、测试或提交行为，且不得基于主观假设生成或部分更新执行计划。
+在本模式下，你严禁：
+
+- 实现或修改任何应用代码。
+- 运行任何测试。
+- 进行任何提交操作。
+- 在结构不完整或语义不一致的情况下，部分更新执行计划。
+- 绕过 Specs 层事实，基于主观推断生成任务。
 
 ---
 
@@ -28,7 +35,9 @@
 在生成或重建 `IMPLEMENTATION_PLAN.md` 时，必须遵守以下规则：
 
 - 如果文件不存在，必须创建该文件。
-- 每一个进入「Executable Tasks」的任务，必须至少包含一条可核验的事实证据（任选其一）。
+- 每一个进入「Executable Tasks」的任务，必须至少包含一条证据，例如：
+  specs 中的明确条目引用
+  在 src/ 中搜索确认不存在的结论
 - 必须始终在文件最顶部包含以下头部内容（原样写入）：
 
 # IMPLEMENTATION_PLAN.md
@@ -89,7 +98,53 @@
 
 在生成或更新 `IMPLEMENTATION_PLAN.md` 时，你 **必须** 为每一项任务显式标注 Task Kind。
 
-每个任务必须显式标注 Task Kind，定义与判定规则以 AGENTS.md 为唯一权威来源。
+Task Kind 只能从以下集合中选择其一：
+
+- [NEW]      新增能力
+- [CHANGE]   行为调整
+- [BUG]      错误修复
+- [TEST]     测试与回压补充
+- [REFACTOR] 结构重构
+- [PERF]     性能与稳定性
+- [DOC]      文档与运行规范
+- [DEBT]     技术债记录
+
+#### 标注原则
+
+- 每个任务 **必须且只能** 标注一个 Task Kind
+- Task Kind 只用于任务语义分类，不得影响任务优先级判断
+- 不得因为 Task Kind 而拆分或合并任务
+- 不得引入新的 Task Kind
+
+#### 分类判定规则（必须遵守）
+
+- specs 中存在、代码中不存在的能力 → `[NEW]`
+- 能力存在但行为与 specs 不一致 → `[CHANGE]`
+- 行为明确违反 specs 或既有测试 → `[BUG]`
+- specs 有 acceptance criteria，但缺失或不足 tests → `[TEST]`
+- 不改变外部行为的结构整理 → `[REFACTOR]`
+- 未满足性能 / 稳定性等非功能性要求 → `[PERF]`
+- AGENTS / 运行 / 构建规范修正 → `[DOC]`
+- 已识别但明确不在当前执行范围 → `[DEBT]`
+
+#### 输出格式要求（强制）
+
+在 `IMPLEMENTATION_PLAN.md` 中，所有任务必须使用以下格式：
+
+- `[TASK_KIND] 任务描述`
+  - 必要时可附加一行简要说明或来源（spec / ui_reference / schema_reference / bug / test）
+
+示例：
+
+- `[NEW] 实现人员信息新增接口`
+- `[BUG] 修复重复身份证号仍可录入的问题`
+- `[TEST] 为轨迹合并逻辑补充边界条件测试`
+- `[DEBT] 当前轨迹表存在写扩散风险（暂不处理）`
+
+#### 特别约束
+
+- `[DEBT]` 类任务 **不得** 出现在 BUILD 阶段可执行任务列表中
+- 若某任务无法明确归类，应停止规划并明确标注为未决问题，而不是强行分类
 
 ---
 
@@ -100,3 +155,26 @@
 - 立即停止执行。
 - 不得继续进入实现阶段。
 - 下一步必须使用 `PROMPT_build.md` 进行。
+
+---
+
+## PLAN 终止条件（Terminal Conditions）
+
+当且仅当同时满足以下条件时，视为规划完成：
+
+- IMPLEMENTATION_PLAN.md 已被完整生成或重建；
+- 所有进入「Executable Tasks」的任务：
+  - 已明确 Task Kind；
+  - 均可在单次 BUILD 循环中完成；
+- 所有无法判定或依赖外部决策的问题：
+  - 已被明确移入「Deferred / Out of Scope」或「未决问题」区；
+- 不再存在需要进一步澄清才能继续规划的矛盾或缺口。
+
+满足上述条件后，你必须：
+1. 停止继续规划；
+2. 在输出中 **单独输出且仅输出如下标记行**（完全一致）：
+
+[PLAN_EXIT]
+
+3. 正常结束 PLANNING 阶段；
+4. 不得进入 BUILD，不得请求人工确认。
